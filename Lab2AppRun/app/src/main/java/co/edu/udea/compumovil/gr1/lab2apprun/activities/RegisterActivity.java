@@ -28,8 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void register(View view) {
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.layout_image);
-        layout.setVisibility(ImageView.VISIBLE);
+
     }
 
     public void loadImage(View view) {
