@@ -1,5 +1,6 @@
 package co.edu.udea.compumovil.gr1.lab2apprun.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -21,6 +22,7 @@ import co.edu.udea.compumovil.gr1.lab2apprun.R;
 import co.edu.udea.compumovil.gr1.lab2apprun.fragments.AboutFragment;
 import co.edu.udea.compumovil.gr1.lab2apprun.fragments.ProfileFragment;
 import co.edu.udea.compumovil.gr1.lab2apprun.fragments.RaceFragment;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,6 +43,9 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View headerView = navigationView.getHeaderView(0);
+        CircleImageView profileImage = (CircleImageView) headerView.findViewById(R.id.profile_image);
+
 
         if (savedInstanceState == null) {
             Fragment fragment = new ProfileFragment();
@@ -74,6 +79,14 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     navigationView.setCheckedItem(R.id.nav_profile);
                 }
+            }
+        });
+
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), RegisterActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -147,4 +160,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 }
+

@@ -13,6 +13,7 @@
 
     <string name="hint_user">User</string>
     <string name="hint_pass">Pass</string>
+    <string name="hint_confPass">Confirm Pass</string>
     <string name="hint_email">Email</string>
     <string name="hint_race_name">Race Name</string>
     <string name="hint_description">Description</string>

@@ -38,8 +38,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@id/edit_pass"
-        android:text="Registrarse"
-        android:onClick="register"/>
+        android:onClick="register"
+        android:text="Registrarse" />
 
     <Button
         android:id="@+id/buttonIngresar"
