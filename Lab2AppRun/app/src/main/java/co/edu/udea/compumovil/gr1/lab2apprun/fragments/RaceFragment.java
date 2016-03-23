@@ -53,14 +53,7 @@ public class RaceFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddRaceActivity.class);
-                startActivity(intent);
-            }
-        });
+
        /* dbManager = new DbManager(getActivity());
         cursor = dbManager.raceCursor();
         racesCursorAdapter = new RacesCursorAdapter(getActivity(), cursor, 0);

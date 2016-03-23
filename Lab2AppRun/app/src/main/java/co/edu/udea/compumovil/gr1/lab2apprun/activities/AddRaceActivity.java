@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -18,6 +20,7 @@ import java.io.InputStream;
 import co.edu.udea.compumovil.gr1.lab2apprun.R;
 import co.edu.udea.compumovil.gr1.lab2apprun.classes.DbManager;
 import co.edu.udea.compumovil.gr1.lab2apprun.classes.Event;
+import co.edu.udea.compumovil.gr1.lab2apprun.classes.Validator;
 
 public class AddRaceActivity extends AppCompatActivity {
 
@@ -46,6 +49,14 @@ public class AddRaceActivity extends AppCompatActivity {
         etPhone = (EditText) findViewById(R.id.et_phone);
         etEmail = (EditText) findViewById(R.id.et_email);
         ivImage = (ImageView) findViewById(R.id.iv_choose_race);
+
+        //Fields Validation
+        validateTextFields(etName, "Please enter the Race's name");
+        validateTextFields(etDescription, "Please enter the Race's description");
+        validateTextFields(etDistance, "Please enter the Race's distance");
+        validateTextFields(etPlace, "Please enter the Race's place");
+        validateTextFields(etPhone, "Please enter the Race's phone");
+        validateTextFields(etEmail, "Please enter the Race's email");
     }
 
     public void addImage(View view) {
@@ -80,7 +91,12 @@ public class AddRaceActivity extends AppCompatActivity {
     public void addRace(View view) {
         String name = etName.getText().toString();
         String description = etDescription.getText().toString();
-        Double distance = Double.valueOf(etDistance.getText().toString());
+        Double distance = 0.0;
+        try {
+            distance = Double.valueOf(etDistance.getText().toString());
+        } catch (Exception e) {
+
+        }
         String place = etPlace.getText().toString();
         Integer year = dpDate.getYear();
         Integer month = dpDate.getMonth();
@@ -91,10 +107,32 @@ public class AddRaceActivity extends AppCompatActivity {
         String date = sb.toString();
         String phone = etPhone.getText().toString();
         String email = etEmail.getText().toString();
+        if (name.length() == 0 || description.length() == 0 ||
+                etDistance.getText().toString().length() == 0 || place.length() == 0 ||
+                date.length() == 0 || phone.length() == 0 || email.length() == 0) {
+
+            Toast.makeText(this, "Todos los campos son obligatorios, por favor diligencielos.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         Event event = new Event(name, description, distance, place, date, phone, email, imagePath);
         dbManager = new DbManager(this);
         dbManager.insertEvent(event);
         finish();
+    }
+
+    public void validateTextFields(EditText textView, final String textError) {
+        if (textView.getText().toString().length() == 0) {
+            textView.setError(textError);
+            textView.addTextChangedListener(new Validator(textView) {
+                @Override
+                public void validate(TextView textView, String text) {
+                    if (textView.getText().toString().length() == 0) {
+                        textView.setError(textError);
+                    }
+                }
+            });
+        }
     }
 
 

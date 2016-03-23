@@ -51,10 +51,15 @@ public class RacesCursorAdapter extends CursorAdapter {
         String image = cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_IMAGE));
         String description = cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_DESCRIPTION));
         String name = cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_NAME));
+        Bitmap selectedImage = null;
+        try {
+            ImagesHandler handler = new ImagesHandler();
+            Uri imageUri = Uri.parse(image);
+            selectedImage = handler.decodeImagePath(context, imageUri);
+        } catch (NullPointerException e) {
 
-        ImagesHandler handler = new ImagesHandler();
-        Uri imageUri = Uri.parse(image);
-        Bitmap selectedImage = handler.decodeImagePath(context, imageUri);
+        }
+
 
         // Populate fields with extracted properties
         holder.imageIcon.setImageBitmap(selectedImage);
