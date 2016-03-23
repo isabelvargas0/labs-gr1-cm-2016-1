@@ -1,9 +1,12 @@
 package co.edu.udea.compumovil.gr1.lab2apprun.classes;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +14,12 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 import co.edu.udea.compumovil.gr1.lab2apprun.R;
+import co.edu.udea.compumovil.gr1.lab2apprun.activities.MainActivity;
 
 /**
  * Created by felipe on 22/03/16.
@@ -44,9 +52,12 @@ public class RacesCursorAdapter extends CursorAdapter {
         String description = cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_DESCRIPTION));
         String name = cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_NAME));
 
-        Bitmap bmImg = BitmapFactory.decodeFile(image);
+        ImagesHandler handler = new ImagesHandler();
+        Uri imageUri = Uri.parse(image);
+        Bitmap selectedImage = handler.decodeImagePath(context, imageUri);
+
         // Populate fields with extracted properties
-        holder.imageIcon.setImageBitmap(bmImg);
+        holder.imageIcon.setImageBitmap(selectedImage);
         holder.raceName.setText(name);
         holder.raceDescription.setText(description);
     }

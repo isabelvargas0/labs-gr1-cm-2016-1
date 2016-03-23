@@ -57,19 +57,29 @@ public class RaceFragment extends ListFragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), RegisterActivity.class);
+                Intent intent = new Intent(getActivity(), AddRaceActivity.class);
                 startActivity(intent);
             }
         });
+       /* dbManager = new DbManager(getActivity());
+        cursor = dbManager.raceCursor();
+        racesCursorAdapter = new RacesCursorAdapter(getActivity(), cursor, 0);
+        ListView listView = getListView();
+        listView.setAdapter(racesCursorAdapter);*/
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         dbManager = new DbManager(getActivity());
         cursor = dbManager.raceCursor();
         racesCursorAdapter = new RacesCursorAdapter(getActivity(), cursor, 0);
         ListView listView = getListView();
         listView.setAdapter(racesCursorAdapter);
-
     }
 
-    @Override
+    /*@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.race, menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -90,5 +100,5 @@ public class RaceFragment extends ListFragment {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 }

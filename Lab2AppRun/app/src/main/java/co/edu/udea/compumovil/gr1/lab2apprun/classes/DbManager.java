@@ -28,7 +28,7 @@ public class DbManager {
             + CN_USERNAME + " text not null unique,"
             + CN_EMAIL + " text not null,"
             + CN_PASSWORD + " text not null,"
-            + CN_IMAGE + " text not null);";
+            + CN_IMAGE + " text);";
 
     public static final String CREATE_TABLE_EVENTS = "create table if not exists "
             + TABLE_EVENTS + " ("
