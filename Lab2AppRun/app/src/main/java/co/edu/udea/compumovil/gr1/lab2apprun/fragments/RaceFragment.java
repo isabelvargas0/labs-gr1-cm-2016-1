@@ -1,26 +1,18 @@
 package co.edu.udea.compumovil.gr1.lab2apprun.fragments;
 
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
 import co.edu.udea.compumovil.gr1.lab2apprun.R;
-import co.edu.udea.compumovil.gr1.lab2apprun.activities.AddRaceActivity;
-import co.edu.udea.compumovil.gr1.lab2apprun.activities.RegisterActivity;
 import co.edu.udea.compumovil.gr1.lab2apprun.classes.DbManager;
-import co.edu.udea.compumovil.gr1.lab2apprun.classes.Event;
 import co.edu.udea.compumovil.gr1.lab2apprun.classes.RacesCursorAdapter;
 
 /**
@@ -70,6 +62,21 @@ public class RaceFragment extends ListFragment {
         racesCursorAdapter = new RacesCursorAdapter(getActivity(), cursor, 0);
         ListView listView = getListView();
         listView.setAdapter(racesCursorAdapter);
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        Cursor cur = (Cursor) racesCursorAdapter.getItem(position);
+        cur.moveToPosition(position);
+        String raceId;
+        raceId = cur.getString(cur.getColumnIndexOrThrow("_id"));
+        RaceDetailFragment raceDetailFragment = new RaceDetailFragment();
+        raceDetailFragment.setRaceId(raceId);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.frame_content, raceDetailFragment);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
     /*@Override

@@ -39,6 +39,7 @@ public class DbManager {
             + CN_PLACE + " text not null,"
             + CN_DATE + " text not null,"
             + CN_PHONE + " text not null,"
+            + CN_EMAIL + " text not null,"
             + CN_IMAGE + " text);";
 
     private DbHelper dbHelper;
@@ -60,7 +61,8 @@ public class DbManager {
     }
 
     private ContentValues eventsContentValues(String name, String description, double distance,
-                                              String place, String date, String phone, String imagePath) {
+                                              String place, String date, String phone, String email,
+                                              String imagePath) {
         ContentValues values = new ContentValues();
         values.put(CN_NAME, name);
         values.put(CN_DESCRIPTION, description);
@@ -68,6 +70,7 @@ public class DbManager {
         values.put(CN_PLACE, place);
         values.put(CN_DATE, date);
         values.put(CN_PHONE, phone);
+        values.put(CN_EMAIL, email);
         values.put(CN_IMAGE, imagePath);
         return values;
     }
@@ -80,7 +83,7 @@ public class DbManager {
     public void insertEvent(Event event) {
         db.insert(TABLE_EVENTS, null, eventsContentValues(event.getName(), event.getDescription(),
                 event.getDistance(), event.getPlace(), event.getDate(), event.getPhone(),
-                event.getImagePath()));
+                event.getEmail(), event.getImagePath()));
     }
 
     public void deleteEvent(Event event) {
@@ -92,4 +95,16 @@ public class DbManager {
         String[] columns = new String[]{CN_ID, CN_NAME, CN_DESCRIPTION, CN_IMAGE};
         return db.query(TABLE_EVENTS, columns, null, null, null, null, null);
     }
+
+    public Cursor getRaceById(String id) {
+        db = dbHelper.getReadableDatabase();
+        String whereClause = CN_ID + " = ?";
+        String[] columns = new String[]{CN_ID, CN_NAME, CN_DESCRIPTION, CN_DISTANCE, CN_PLACE,
+                CN_DATE, CN_PHONE, CN_EMAIL, CN_IMAGE};
+        String[] whereArgs = new String[]{id};
+
+        return db.query(TABLE_EVENTS, columns, whereClause, whereArgs, null, null, null);
+    }
+
+
 }
