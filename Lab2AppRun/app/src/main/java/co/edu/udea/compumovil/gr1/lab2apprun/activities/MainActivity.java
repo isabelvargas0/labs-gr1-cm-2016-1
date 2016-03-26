@@ -1,10 +1,12 @@
 package co.edu.udea.compumovil.gr1.lab2apprun.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,8 +19,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import co.edu.udea.compumovil.gr1.lab2apprun.R;
+import co.edu.udea.compumovil.gr1.lab2apprun.classes.ImagesHandler;
 import co.edu.udea.compumovil.gr1.lab2apprun.fragments.AboutFragment;
 import co.edu.udea.compumovil.gr1.lab2apprun.fragments.ProfileFragment;
 import co.edu.udea.compumovil.gr1.lab2apprun.fragments.RaceFragment;
@@ -27,6 +34,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     NavigationView navigationView;
+    private static final int RESULT = 100;
+    public static final String USER = "user";
+    public static final String EMAIL = "email";
+    public static final String IMAGE = "image";
+    private View headerView;
+    private CircleImageView profileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +65,8 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        View headerView = navigationView.getHeaderView(0);
-        CircleImageView profileImage = (CircleImageView) headerView.findViewById(R.id.profile_image);
+        headerView = navigationView.getHeaderView(0);
+        profileImage = (CircleImageView) headerView.findViewById(R.id.profile_image);
 
 
         if (savedInstanceState == null) {
@@ -94,8 +107,8 @@ public class MainActivity extends AppCompatActivity
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), RegisterActivity.class);
-                startActivity(intent);
+                Intent intent = new Intent(v.getContext(), LoginActivity.class);
+                startActivityForResult(intent, RESULT);
             }
         });
     }
@@ -170,6 +183,33 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case RESULT:
+                if (resultCode == RESULT_OK) {
+                    String userName = data.getStringExtra(USER);
+                    String userEmail = data.getStringExtra(EMAIL);
+                    String userImage = data.getStringExtra(IMAGE);
+                    Bitmap selectedImage = null;
+                    try {
+                        ImagesHandler handler = new ImagesHandler();
+                        Uri imageUri = Uri.parse(userImage);
+                        selectedImage = handler.decodeImagePath(this, imageUri);
+                    } catch (NullPointerException e) {
 
+                    }
+
+                    TextView tvUserName = (TextView) headerView.findViewById(R.id.tv_profile_name);
+                    TextView tvUserEmail = (TextView) headerView.findViewById(R.id.tv_profile_email);
+
+                    profileImage.setImageBitmap(selectedImage);
+                    tvUserName.setText(userName);
+                    tvUserEmail.setText(userEmail);
+
+                }
+        }
+    }
 }
 

@@ -82,7 +82,7 @@ public class DbManager {
 
     public void insertEvent(Event event) {
         db.insert(TABLE_EVENTS, null, eventsContentValues(event.getName(), event.getDescription(),
-                event.getDistance(), event.getPlace(), event.getDate(), event.getPhone(),
+                Double.valueOf(event.getDistance()), event.getPlace(), event.getDate(), event.getPhone(),
                 event.getEmail(), event.getImagePath()));
     }
 
@@ -104,6 +104,15 @@ public class DbManager {
         String[] whereArgs = new String[]{id};
 
         return db.query(TABLE_EVENTS, columns, whereClause, whereArgs, null, null, null);
+    }
+
+    public Cursor getUserByUserName(String userName) {
+        db = dbHelper.getReadableDatabase();
+        String whereClause = CN_USERNAME + " = ?";
+        String[] columns = new String[]{CN_USERNAME, CN_EMAIL, CN_PASSWORD, CN_IMAGE};
+        String[] whereArgs = new String[]{userName};
+
+        return db.query(TABLE_USERS, columns, whereClause, whereArgs, null, null, null);
     }
 
 
