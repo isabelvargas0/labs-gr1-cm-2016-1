@@ -22,6 +22,8 @@ import co.edu.udea.compumovil.gr1.lab2apprun.classes.RacesCursorAdapter;
  */
 public class RaceDetailFragment extends Fragment {
 
+    private final static String SPACE = " ";
+    private final static String KM = "km";
     private String raceId;
     private Cursor cursor;
     private DbManager dbManager;
@@ -69,11 +71,16 @@ public class RaceDetailFragment extends Fragment {
             }
             String name = cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_NAME));
             String descr = cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_DESCRIPTION));
-            String dist = cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_DISTANCE));
-            String place = cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_PLACE));
-            String date = cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_DATE));
-            String phone = cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_PHONE));
-            String email = cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_EMAIL));
+            String dist = getResources().getString(R.string.label_distance) + SPACE
+                    + cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_DISTANCE)) + KM;
+            String place = getResources().getString(R.string.label_place) + SPACE
+                    + cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_PLACE));
+            String date = getResources().getString(R.string.label_date) + SPACE
+                    + cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_DATE));
+            String phone = getResources().getString(R.string.label_phone) + SPACE
+                    + cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_PHONE));
+            String email = getResources().getString(R.string.label_email) + SPACE
+                    + cursor.getString(cursor.getColumnIndexOrThrow(DbManager.CN_EMAIL));
 
             imageView.setImageBitmap(selectedImage);
             tvName.setText(name);

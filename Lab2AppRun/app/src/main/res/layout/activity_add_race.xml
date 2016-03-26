@@ -20,8 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:hint="@string/hint_race_name"
-            android:inputType="textPersonName"
-            android:capitalize="sentences"/>
+            android:inputType="textCapSentences" />
 
         <EditText
             android:id="@+id/et_description"
@@ -29,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:hint="@string/hint_description"
-            android:inputType="text" />
+            android:inputType="textCapSentences"/>
 
         <EditText
             android:id="@+id/et_distance"
@@ -45,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:hint="@string/hint_place"
-            android:inputType="textPersonName" />
+            android:inputType="textCapSentences" />
 
         <DatePicker
             android:id="@+id/date"
