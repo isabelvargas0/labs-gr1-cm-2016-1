@@ -100,10 +100,10 @@ public class MainActivity extends AppCompatActivity
                     } else if (stackName.equals("AboutFragment")) {
                         navigationView.setCheckedItem(R.id.nav_about);
                     } else {
-                        navigationView.setCheckedItem(R.id.nav_profile);
+                        navigationView.setCheckedItem(R.id.nav_race);
                     }
                 } else {
-                    navigationView.setCheckedItem(R.id.nav_profile);
+                    navigationView.setCheckedItem(R.id.nav_race);
                 }
             }
         });
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity
                 fragmentClass = AboutFragment.class;
                 break;
             default:
-                fragmentClass = ProfileFragment.class;
+                fragmentClass = RaceFragment.class;
         }
 
         try {
