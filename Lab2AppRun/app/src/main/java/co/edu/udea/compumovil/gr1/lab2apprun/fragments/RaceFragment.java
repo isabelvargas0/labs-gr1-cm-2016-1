@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import co.edu.udea.compumovil.gr1.lab2apprun.R;
 import co.edu.udea.compumovil.gr1.lab2apprun.classes.DbManager;
@@ -62,6 +63,11 @@ public class RaceFragment extends ListFragment {
         racesCursorAdapter = new RacesCursorAdapter(getActivity(), cursor, 0);
         ListView listView = getListView();
         listView.setAdapter(racesCursorAdapter);
+        if (listView.getCount() == 0) {
+            Toast.makeText(getActivity(), "There are no registered races, please add one by " +
+                            "clicking on the plus button",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

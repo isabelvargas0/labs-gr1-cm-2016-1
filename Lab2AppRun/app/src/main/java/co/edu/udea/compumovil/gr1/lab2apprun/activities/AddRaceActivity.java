@@ -1,5 +1,6 @@
 package co.edu.udea.compumovil.gr1.lab2apprun.activities;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -40,6 +41,8 @@ public class AddRaceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_add_race);
         etName = (EditText) findViewById(R.id.et_name);
         etDescription = (EditText) findViewById(R.id.et_description);

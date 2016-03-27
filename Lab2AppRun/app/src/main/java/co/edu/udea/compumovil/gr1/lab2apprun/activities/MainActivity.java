@@ -23,9 +23,11 @@ import android.widget.TextView;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.HashMap;
 
 import co.edu.udea.compumovil.gr1.lab2apprun.R;
 import co.edu.udea.compumovil.gr1.lab2apprun.classes.ImagesHandler;
+import co.edu.udea.compumovil.gr1.lab2apprun.classes.SessionManager;
 import co.edu.udea.compumovil.gr1.lab2apprun.fragments.AboutFragment;
 import co.edu.udea.compumovil.gr1.lab2apprun.fragments.ProfileFragment;
 import co.edu.udea.compumovil.gr1.lab2apprun.fragments.RaceFragment;
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity
     public static final String IMAGE = "image";
     private View headerView;
     private CircleImageView profileImage;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,14 +71,15 @@ public class MainActivity extends AppCompatActivity
         headerView = navigationView.getHeaderView(0);
         profileImage = (CircleImageView) headerView.findViewById(R.id.profile_image);
 
-
-        if (savedInstanceState == null) {
+        session = new SessionManager(this);
+        session.checkLogin();
+       /* if (savedInstanceState == null) {
             Fragment fragment = new ProfileFragment();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.frame_content, fragment)
                     .commit();
             navigationView.setCheckedItem(R.id.nav_profile);
-        }
+        }*/
 
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
@@ -104,13 +108,46 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        profileImage.setOnClickListener(new View.OnClickListener() {
+       /* profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), LoginActivity.class);
                 startActivityForResult(intent, RESULT);
             }
-        });
+        });*/
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // get user data from session
+        HashMap<String, String> user = session.getUserDetails();
+
+        // name
+        String image = user.get(SessionManager.KEY_IMAGE);
+
+        // name
+        String name = user.get(SessionManager.KEY_NAME);
+
+        // email
+        String email = user.get(SessionManager.KEY_EMAIL);
+        Bitmap selectedImage = null;
+        try {
+            ImagesHandler handler = new ImagesHandler();
+            Uri imageUri = Uri.parse(image);
+            selectedImage = handler.decodeImagePath(this, imageUri);
+        } catch (NullPointerException e) {
+
+        }
+
+        TextView tvUserName = (TextView) headerView.findViewById(R.id.tv_profile_name);
+        TextView tvUserEmail = (TextView) headerView.findViewById(R.id.tv_profile_email);
+
+        profileImage.setImageBitmap(selectedImage);
+        tvUserName.setText(name);
+        tvUserEmail.setText(email);
+        navigationView.setCheckedItem(R.id.nav_race);
     }
 
     @Override
@@ -137,9 +174,11 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_logout:
+                session.logoutUser();
         }
 
         return super.onOptionsItemSelected(item);
