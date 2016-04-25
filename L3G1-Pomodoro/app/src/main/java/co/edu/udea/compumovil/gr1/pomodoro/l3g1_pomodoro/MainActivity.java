@@ -5,12 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,9 +18,16 @@ public class MainActivity extends AppCompatActivity {
 
     EditText editTimer;
     TextView timeViewer;
+    Button startButton;
+    Button stopButton;
 
     private BroadcastReceiver broadcastReceiver;
     private Intent intent;
+    private boolean timerStarted = false;
+    ProgressBar progressBar;
+    ObjectAnimator animation;
+    int seconds;
+    int minutes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,44 +39,72 @@ public class MainActivity extends AppCompatActivity {
                 updateDataToUI(intent);
             }
         };
-        LocalBroadcastManager.getInstance(this).registerReceiver((broadcastReceiver),
+        registerReceiver((broadcastReceiver),
                 new IntentFilter(CountDownService.COUNTDOWN_BR));
+
+        startButton = (Button) findViewById(R.id.btnStartTime);
+        stopButton = (Button) findViewById(R.id.btnStopTime);
         editTimer = (EditText) findViewById(R.id.edtTimerValue);
-        timeViewer = (TextView) findViewById(R.id.tvTimeCount);
+        timeViewer = (TextView) findViewById(R.id.tvMinuteCount);
+        intent = new Intent(this, CountDownService.class);
+        progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        // see this max value coming back here, we animate towards that value
+        //animation = ObjectAnimator.ofInt(progressBar, "progress", 0, 100);
 
     }
 
     private void updateDataToUI(Intent intent) {
-        timeViewer.setText(String.valueOf(intent.getLongExtra(CountDownService.COUNTDOWN, 1L)));
+        seconds = intent.getIntExtra(CountDownService.SECONDS, 1);
+        minutes = intent.getIntExtra(CountDownService.MINUTES, 1);
+        timeViewer.setText(String.format("%02d", seconds / 60)
+                + ":" + String.format("%02d", seconds % 60));
+        progressBar.setProgress(seconds);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        registerReceiver((broadcastReceiver),
+                new IntentFilter(CountDownService.COUNTDOWN_BR));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("MainActivity","onPause");
+        Log.i("MainActivity", "onPause");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         Log.i("MainActivity", "onStop");
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         stopService(intent);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        unregisterReceiver(broadcastReceiver);
     }
 
     public void startTimer(View v) {
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressbar);
-        ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, 100); // see this max value coming back here, we animale towards that value
-        animation.setDuration(5000); //in milliseconds
-        animation.setInterpolator(new DecelerateInterpolator());
-        animation.start();
-        intent = new Intent(this, CountDownService.class);
+        progressBar.setMax(Integer.valueOf(editTimer.getText().toString()) * 60);
+        // animation.setDuration(Long.valueOf(editTimer.getText().toString()) * 60000); //in milliseconds
+        //animation.setDuration(20000); //in milliseconds
+        //animation.setInterpolator(new DecelerateInterpolator());
+        //animation.start();
         intent.putExtra(CountDownService.COUNTDOWN_TIME, Long.valueOf(editTimer.getText().toString()));
+        timerStarted = true;
+        startButton.setVisibility(View.GONE);
+        stopButton.setVisibility(View.VISIBLE);
         startService(intent);
+    }
+
+    public void pauseTimer(View v) {
+        startButton.setVisibility(View.VISIBLE);
+        stopButton.setVisibility(View.GONE);
+        //animation.cancel();
+        timerStarted = false;
     }
 }

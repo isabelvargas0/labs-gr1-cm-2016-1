@@ -5,16 +5,16 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+
+import java.util.concurrent.TimeUnit;
 
 public class CountDownService extends Service {
 
-    private LocalBroadcastManager broadcastManager;
     public static final String COUNTDOWN_TIME = "time";
-    public static final String COUNTDOWN = "countdown";
+    public static final String MINUTES = "minutes";
+    public static final String SECONDS = "seconds";
     private long millis;
 
     public CountDownService() {
@@ -30,8 +30,6 @@ public class CountDownService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        broadcastManager = LocalBroadcastManager.getInstance(this);
-
     }
 
     @Override
@@ -44,22 +42,24 @@ public class CountDownService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        millis = intent.getLongExtra(COUNTDOWN_TIME, 1L) * 1000;
+        millis = intent.getLongExtra(COUNTDOWN_TIME, 1L) * 60000;
         cdt = new CountDownTimer(millis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-
-                Log.i(TAG, "Countdown seconds remaining: " + millisUntilFinished / 1000);
-                bi.putExtra(COUNTDOWN, millisUntilFinished / 1000);
-                broadcastManager.sendBroadcast(bi);
+                int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished);
+                int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished);
+                Log.i(TAG, "Countdown minutes remaining: " + minutes);
+                bi.putExtra(MINUTES, minutes);
+                bi.putExtra(SECONDS, seconds);
+                sendBroadcast(bi);
             }
 
             @Override
             public void onFinish() {
                 Log.i(TAG, "Timer finished");
-                Intent intent1 = new Intent(getApplicationContext(), AlarmReceiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
-                        123312132, intent1, 0);
+                Intent intent1 = new Intent(getApplicationContext(), AlarmActivity.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+                        12345, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                 alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
             }
